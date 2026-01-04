@@ -1,14 +1,54 @@
+# Dependencies
 **/node_modules
+node_modules/
+
+# Build output
 **/dist
-**/.env
-.idea
-.vscode
+dist/
+dist-ssr
+build/
+
+# Vite
+.vite/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+!.vscode/extensions.json
+*.sw?
+*~
+*.njsproj
+*.ntvs*
+*.sln
+*.suo
+
+# OS
 **/.DS_Store
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
 *.log
-*.tmp
-coverage
+lerna-debug.log*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-lerna-debug.log*
+pnpm-debug.log*
+
+# Environment variables
+**/.env
+.env
+.env.local
 .env.*
+.env.*.local
+*.local
+
+# Testing & Temp
+*.tmp
+coverage
+
+# Cache
+.cache/
+*.cache

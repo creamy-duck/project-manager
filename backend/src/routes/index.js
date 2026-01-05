@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const usersRouter = require('./users');
+const authRouter = require('./auth');
 
 function setupRoutes(app, apiPrefix) {
     const apiRouter = express.Router();
 
     apiRouter.use('/users', usersRouter);
+    apiRouter.use('/auth', authRouter);
 
     apiRouter.use('/', (req, res) => {
         res.status(404).json({

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -33,6 +32,10 @@ const userSchema = new mongoose.Schema({
         default: true
     },
     isEmailVerified: {
+        type: Boolean,
+        default: false
+    },
+    isSysAdmin: {
         type: Boolean,
         default: false
     },

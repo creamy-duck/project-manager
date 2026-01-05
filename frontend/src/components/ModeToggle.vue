@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useColorMode } from '@vueuse/core'
 
-import { IconMoon, IconSun } from '@tabler/icons-vue'
-
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -11,7 +9,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-// Pass { disableTransition: false } to enable transitions
 const mode = useColorMode()
 </script>
 

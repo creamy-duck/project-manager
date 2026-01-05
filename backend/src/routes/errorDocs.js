@@ -56,6 +56,14 @@ router.get('/html', (req, res) => {
     const grouped = groupByCategory();
     const total = flattenErrorCodes().length;
 
+    // Helper to escape HTML special characters
+    const escapeHtml = (str) => str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
     const categoryDescriptions = {
         VALIDATION: 'Input validation errors',
         AUTH: 'Authentication errors',
@@ -176,7 +184,9 @@ router.get('/html', (req, res) => {
         }
         .search-box:focus { outline: none; border-color: #3b82f6; }
         .search-box::placeholder { color: #64748b; }
-        .hidden { display: none; }
+        .hidden { display: none !important; }
+        tr.hidden { display: none !important; }
+        .category.hidden { display: none !important; }
         .formats {
             display: flex;
             gap: 0.5rem;
@@ -217,7 +227,7 @@ router.get('/html', (req, res) => {
             </div>
         </div>
 
-        <input type="text" class="search-box" placeholder="Search error codes..." id="search" onkeyup="filterCodes()">
+        <input type="text" class="search-box" placeholder="Search error codes..." id="search" oninput="filterCodes()">
 `;
 
     for (const [category, errors] of Object.entries(grouped)) {
@@ -242,10 +252,13 @@ router.get('/html', (req, res) => {
 
         for (const error of errors) {
             const color = statusColors[error.statusCode] || '#64748b';
+            const safeCode = escapeHtml(error.code.toLowerCase());
+            const safeMessage = escapeHtml(error.message.toLowerCase());
+            const displayMessage = escapeHtml(error.message);
             html += `
-                    <tr data-code="${error.code.toLowerCase()}" data-message="${error.message.toLowerCase()}">
-                        <td><span class="code">${error.code}</span></td>
-                        <td class="message">${error.message}</td>
+                    <tr data-code="${safeCode}" data-message="${safeMessage}">
+                        <td><span class="code">${escapeHtml(error.code)}</span></td>
+                        <td class="message">${displayMessage}</td>
                         <td><span class="status" style="background: ${color}20; color: ${color}">${error.statusCode}</span></td>
                     </tr>`;
         }
@@ -260,22 +273,43 @@ router.get('/html', (req, res) => {
     </div>
     <script>
         function filterCodes() {
-            const search = document.getElementById('search').value.toLowerCase();
+            const searchInput = document.getElementById('search');
+            if (!searchInput) return;
+
+            const search = searchInput.value.toLowerCase().trim();
             const rows = document.querySelectorAll('tbody tr');
 
-            rows.forEach(row => {
-                const code = row.dataset.code || '';
-                const message = row.dataset.message || '';
-                const matches = code.includes(search) || message.includes(search);
-                row.classList.toggle('hidden', !matches);
+            rows.forEach(function(row) {
+                const code = (row.getAttribute('data-code') || '').toLowerCase();
+                const message = (row.getAttribute('data-message') || '').toLowerCase();
+                const matches = search === '' || code.indexOf(search) !== -1 || message.indexOf(search) !== -1;
+
+                if (matches) {
+                    row.classList.remove('hidden');
+                    row.style.display = '';
+                } else {
+                    row.classList.add('hidden');
+                    row.style.display = 'none';
+                }
             });
 
             // Hide empty categories
-            document.querySelectorAll('.category').forEach(cat => {
+            document.querySelectorAll('.category').forEach(function(cat) {
                 const visibleRows = cat.querySelectorAll('tbody tr:not(.hidden)');
-                cat.classList.toggle('hidden', visibleRows.length === 0);
+                if (visibleRows.length === 0) {
+                    cat.classList.add('hidden');
+                    cat.style.display = 'none';
+                } else {
+                    cat.classList.remove('hidden');
+                    cat.style.display = '';
+                }
             });
         }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('search').addEventListener('input', filterCodes);
+        });
     </script>
 </body>
 </html>`;

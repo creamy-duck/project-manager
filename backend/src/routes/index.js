@@ -9,7 +9,9 @@ function setupRoutes(app, apiPrefix) {
 
     apiRouter.use('/users', usersRouter);
     apiRouter.use('/auth', authRouter);
-    apiRouter.use('/errors', errorDocsRouter);
+    if (process.env.NODE_ENV !== 'production') {
+        apiRouter.use('/errors', errorDocsRouter);
+    }
 
     apiRouter.use('/', (req, res) => {
         res.status(404).json({

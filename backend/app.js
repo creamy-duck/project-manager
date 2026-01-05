@@ -7,6 +7,7 @@ const {parse} = require("dotenv");
 const logger = require('./src/middleware/logger');
 const errorHandler = require('./src/middleware/errorHandler');
 const { serve: swaggerServe, setup: swaggerSetup } = require('./config/swagger');
+const routes = require('./src/routes/index');
 
 dotenv.config();
 
@@ -57,24 +58,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get(`${apiPrefix}/health`, (req, res) => {
-    res.status(200).json({
-        status: 'OK',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV,
-        uptime: process.uptime(),
-        version: process.env.npm_package_version || '1.0.0'
-    });
-});
-
-app.use('/', (req, res) => {
-    res.status(404).json({
-        error: 'Route not found',
-        path: req.originalUrl,
-        method: req.method,
-        suggestion: 'Check /api-docs for available endpoints'
-    });
-});
+routes.setupRoutes(app, apiPrefix);
 
 app.use(errorHandler);
 

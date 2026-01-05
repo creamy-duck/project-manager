@@ -1,6 +1,7 @@
 const app = require('./app');
 const { connectDatabase } = require('./config/database');
 const { logger } = require('./src/middleware/logger');
+const { syncPermissions } = require('./src/services/permissionSync');
 
 const port = process.env.PORT || 3000;
 
@@ -10,6 +11,19 @@ const startServer = async () => {
     try {
         await connectDatabase();
         logger.info(`MongoDB Connected`);
+
+        // Sync endpoint permissions to database
+        try {
+            const syncResults = await syncPermissions(app);
+            logger.info('Permissions synchronized', {
+                created: syncResults.created.length,
+                deleted: syncResults.deleted.length,
+                unchanged: syncResults.unchanged.length
+            });
+        } catch (syncError) {
+            logger.error('Permission sync failed', { error: syncError.message });
+            // Continue startup even if sync fails
+        }
 
         server = app.listen(port, () => {
             logger.info(`Server is running`, {

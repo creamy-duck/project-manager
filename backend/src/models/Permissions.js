@@ -4,6 +4,7 @@ const permissionSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Permission name is required'],
+        unique: true,
         trim: true,
         maxlength: [255, 'Permission name cannot exceed 255 characters']
     },
@@ -26,6 +27,9 @@ const permissionSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+// Add index for endpoint + method lookups
+permissionSchema.index({ endpoint: 1, method: 1 });
 
 const Permission = mongoose.model('Permission', permissionSchema);
 

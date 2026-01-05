@@ -16,7 +16,7 @@ import {
   IconUsers,
 } from '@tabler/icons-vue'
 
-import NavDocuments from '@/components/NavDocuments.vue'
+import NavDummy from '@/components/NavDummy.vue'
 import NavMain from '@/components/NavMain.vue'
 import NavSecondary from '@/components/NavSecondary.vue'
 import NavUser from '@/components/NavUser.vue'
@@ -32,14 +32,14 @@ import {
 
 const data = {
   user: {
-    name: 'Paul',
-    email: 'paul.landgraf009@gmail.com',
+    name: 'Creamy Duck',
+    email: 'creamy_duck2000@dmail.com',
     avatar: '/avatars/shadcn.jpg',
   },
   navMain: [
     {
       title: 'Dashboard',
-      url: '#',
+      url: '/dashboard',
       icon: IconDashboard,
     },
     {
@@ -53,58 +53,10 @@ const data = {
       icon: IconUsers,
     },
   ],
-  navClouds: [
-    {
-      title: 'Capture',
-      icon: IconCamera,
-      isActive: true,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Proposal',
-      icon: IconFileDescription,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-    {
-      title: 'Prompts',
-      icon: IconFileAi,
-      url: '#',
-      items: [
-        {
-          title: 'Active Proposals',
-          url: '#',
-        },
-        {
-          title: 'Archived',
-          url: '#',
-        },
-      ],
-    },
-  ],
   navSecondary: [
     {
       title: 'Settings',
-      url: '#',
+      url: '/settings',
       icon: IconSettings,
     },
     {
@@ -112,25 +64,20 @@ const data = {
       url: '#',
       icon: IconHelp,
     },
-    {
-      title: 'Search',
-      url: '#',
-      icon: IconSearch,
-    },
   ],
-  documents: [
+  dummy: [
     {
-      name: 'Data Library',
+      name: 'Dummy 1',
       url: '#',
       icon: IconDatabase,
     },
     {
-      name: 'Reports',
+      name: 'Dummy 2',
       url: '#',
       icon: IconReport,
     },
     {
-      name: 'Word Assistant',
+      name: 'Dummy 3',
       url: '#',
       icon: IconFileDescription,
     },
@@ -154,7 +101,7 @@ const data = {
     </SidebarHeader>
     <SidebarContent>
       <NavMain :items="data.navMain" />
-      <NavDocuments :items="data.documents" />
+      <NavDummy :items="data.dummy" />
       <NavSecondary :items="data.navSecondary" class="mt-auto" />
     </SidebarContent>
     <SidebarFooter>

@@ -20,14 +20,14 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 
-interface Document {
+interface Dummy {
   name: string
   url: string
   icon?: Component
 }
 
 defineProps<{
-  items: Document[]
+  items: Dummy[]
 }>()
 
 const { isMobile } = useSidebar()
@@ -35,7 +35,7 @@ const { isMobile } = useSidebar()
 
 <template>
   <SidebarGroup class="group-data-[collapsible=icon]:hidden">
-    <SidebarGroupLabel>Documents</SidebarGroupLabel>
+    <SidebarGroupLabel>NavDummy</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem v-for="item in items" :key="item.name">
         <SidebarMenuButton as-child>

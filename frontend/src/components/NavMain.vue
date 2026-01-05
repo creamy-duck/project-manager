@@ -39,16 +39,18 @@ defineProps<{
             class="size-8 group-data-[collapsible=icon]:opacity-0"
             variant="outline"
           >
-            <IconMail />
-            <span class="sr-only">Inbox</span>
+              <IconMail />
+              <span class="sr-only">Inbox</span>
           </Button>
         </SidebarMenuItem>
       </SidebarMenu>
       <SidebarMenu>
         <SidebarMenuItem v-for="item in items" :key="item.title">
-          <SidebarMenuButton :tooltip="item.title">
-            <component :is="item.icon" v-if="item.icon" />
-            <span>{{ item.title }}</span>
+          <SidebarMenuButton as-child>
+            <a :href="item.url">
+              <component :is="item.icon" v-if="item.icon" />
+              {{ item.title }}
+            </a>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

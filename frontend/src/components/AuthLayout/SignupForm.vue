@@ -43,10 +43,10 @@ const props = defineProps<{
           </FieldDescription>
         </div>
         <Field>
-          <FieldLabel for="name">
-            Full Name
+          <FieldLabel for="username">
+            Username
           </FieldLabel>
-          <Input id="name" type="text" placeholder="John Doe" required />
+          <Input id="username" type="text" placeholder="Creamy Duck" required />
         </Field>
         <Field>
           <FieldLabel for="email">
@@ -55,7 +55,7 @@ const props = defineProps<{
           <Input
               id="email"
               type="email"
-              placeholder="m@example.com"
+              placeholder="creamy_duck2000@dmail.com"
               required
           />
         </Field>
@@ -74,6 +74,7 @@ const props = defineProps<{
               <Input id="confirm-password" type="password" required />
             </Field>
           </Field>
+          <!--TODO: Implement password strength check-->
           <FieldDescription>
             Must be at least 8 characters long.
           </FieldDescription>

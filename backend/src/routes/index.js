@@ -2,12 +2,14 @@ const express = require('express');
 const router = express.Router();
 const usersRouter = require('./users');
 const authRouter = require('./auth');
+const errorDocsRouter = require('./errorDocs');
 
 function setupRoutes(app, apiPrefix) {
     const apiRouter = express.Router();
 
     apiRouter.use('/users', usersRouter);
     apiRouter.use('/auth', authRouter);
+    apiRouter.use('/errors', errorDocsRouter);
 
     apiRouter.use('/', (req, res) => {
         res.status(404).json({

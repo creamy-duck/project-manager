@@ -1,5 +1,6 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const { AppError, ErrorCodes } = require('../errors');
 
 class UserService {
     async getAllUsers(options = {}) {
@@ -35,9 +36,7 @@ class UserService {
         const user = await User.findById(id).select('-password -__v');
 
         if (!user) {
-            const error = new Error('User not found');
-            error.code = 'USER_NOT_FOUND';
-            throw error;
+            throw new AppError(ErrorCodes.RESOURCE.USER.NOT_FOUND);
         }
 
         return user;
@@ -52,9 +51,7 @@ class UserService {
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            const error = new Error('Email is already taken');
-            error.code = 'USER_EXISTS';
-            throw error;
+            throw new AppError(ErrorCodes.RESOURCE.USER.EMAIL_EXISTS);
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -76,17 +73,13 @@ class UserService {
 
         const user = await User.findById(id);
         if (!user) {
-            const error = new Error('User not found');
-            error.code = 'USER_NOT_FOUND';
-            throw error;
+            throw new AppError(ErrorCodes.RESOURCE.USER.NOT_FOUND);
         }
 
         if (email && email !== user.email) {
             const existingUser = await User.findOne({ email });
             if (existingUser) {
-                const error = new Error('Email is already taken');
-                error.code = 'EMAIL_EXISTS';
-                throw error;
+                throw new AppError(ErrorCodes.RESOURCE.USER.EMAIL_EXISTS);
             }
         }
 
@@ -104,9 +97,7 @@ class UserService {
         const user = await User.findById(id);
 
         if (!user) {
-            const error = new Error('User not found');
-            error.code = 'USER_NOT_FOUND';
-            throw error;
+            throw new AppError(ErrorCodes.RESOURCE.USER.NOT_FOUND);
         }
 
         await User.findByIdAndDelete(id);

@@ -1,23 +1,20 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { AppError, ErrorCodes } = require('../errors');
 
 class AuthService {
     async authenticateUser(email, password) {
         const user = await User.findOne({ email }).select('+password');
 
         if (!user) {
-            const error = new Error('Invalid credentials');
-            error.code = 'INVALID_CREDENTIALS';
-            throw error;
+            throw new AppError(ErrorCodes.AUTH.INVALID_CREDENTIALS);
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
-            const error = new Error('Invalid credentials');
-            error.code = 'INVALID_CREDENTIALS';
-            throw error;
+            throw new AppError(ErrorCodes.AUTH.INVALID_CREDENTIALS);
         }
 
         const token = this.generateToken(user);
@@ -32,9 +29,10 @@ class AuthService {
         });
 
         if (existingUser) {
-            const error = new Error('Username or email is already taken');
-            error.code = 'USER_EXISTS';
-            throw error;
+            const errorDef = existingUser.email === email
+                ? ErrorCodes.RESOURCE.USER.EMAIL_EXISTS
+                : ErrorCodes.RESOURCE.USER.USERNAME_EXISTS;
+            throw new AppError(errorDef);
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);

@@ -1,14 +1,13 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { AppError, ErrorCodes } = require('../errors');
 
 const authenticate = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({
-                message: 'Access denied. No token provided.'
-            });
+            throw new AppError(ErrorCodes.AUTH.TOKEN_MISSING);
         }
 
         const token = authHeader.substring(7);
@@ -19,21 +18,15 @@ const authenticate = async (req, res, next) => {
         const user = await User.findById(decoded.id).select('-password');
 
         if (!user) {
-            return res.status(401).json({
-                message: 'User not found.'
-            });
+            throw new AppError(ErrorCodes.AUTH.USER_NOT_FOUND);
         }
 
         if (!user.isActive) {
-            return res.status(403).json({
-                message: 'User account is disabled.'
-            });
+            throw new AppError(ErrorCodes.AUTHZ.ACCOUNT_DISABLED);
         }
 
         if (!user.isEmailVerified) {
-            return res.status(403).json({
-                message: 'Email not verified.'
-            });
+            throw new AppError(ErrorCodes.AUTHZ.EMAIL_NOT_VERIFIED);
         }
 
         req.user = user;
@@ -42,22 +35,7 @@ const authenticate = async (req, res, next) => {
 
         next();
     } catch (error) {
-        if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({
-                message: 'Invalid token.'
-            });
-        }
-
-        if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({
-                message: 'Token expired.'
-            });
-        }
-
-        console.error('Authentication error:', error);
-        return res.status(500).json({
-            message: 'Internal server error during authentication.'
-        });
+        next(error);
     }
 };
 

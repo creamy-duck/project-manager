@@ -2,6 +2,7 @@ const Permission = require('../models/Permissions');
 const Role = require('../models/Roles');
 const User_Roles = require('../models/User_Roles');
 const { generatePermissionName } = require('../utils/routeExtractor');
+const { AppError, ErrorCodes } = require('../errors');
 
 /**
  * Authorization middleware factory
@@ -23,10 +24,7 @@ const authorize = (permissionName = null) => {
         try {
             // Check if user is authenticated
             if (!req.user || !req.user._id) {
-                return res.status(401).json({
-                    error: 'Unauthorized',
-                    message: 'Authentication required'
-                });
+                throw new AppError(ErrorCodes.AUTH.TOKEN_MISSING);
             }
 
             // Determine the required permission
@@ -38,10 +36,7 @@ const authorize = (permissionName = null) => {
                 .populate('roleId');
 
             if (!userRoles || userRoles.length === 0) {
-                return res.status(403).json({
-                    error: 'Forbidden',
-                    message: 'No roles assigned to user'
-                });
+                throw new AppError(ErrorCodes.AUTHZ.NO_ROLES);
             }
 
             // Collect all permissions from user's roles
@@ -79,17 +74,12 @@ const authorize = (permissionName = null) => {
             }
 
             // Permission denied
-            return res.status(403).json({
-                error: 'Forbidden',
-                message: `Missing permission: ${requiredPermission}`
+            throw new AppError(ErrorCodes.AUTHZ.PERMISSION_DENIED, {
+                details: { required: requiredPermission }
             });
 
         } catch (error) {
-            console.error('Authorization error:', error);
-            return res.status(500).json({
-                error: 'Internal Server Error',
-                message: 'Authorization check failed'
-            });
+            next(error);
         }
     };
 };
@@ -107,10 +97,7 @@ const authorizeAny = (permissions) => {
     return async (req, res, next) => {
         try {
             if (!req.user || !req.user._id) {
-                return res.status(401).json({
-                    error: 'Unauthorized',
-                    message: 'Authentication required'
-                });
+                throw new AppError(ErrorCodes.AUTH.TOKEN_MISSING);
             }
 
             const userRoles = await User_Roles.find({ userId: req.user._id })
@@ -132,17 +119,12 @@ const authorizeAny = (permissions) => {
                 return next();
             }
 
-            return res.status(403).json({
-                error: 'Forbidden',
-                message: `Missing one of permissions: ${permissions.join(', ')}`
+            throw new AppError(ErrorCodes.AUTHZ.PERMISSION_DENIED, {
+                details: { required: permissions }
             });
 
         } catch (error) {
-            console.error('Authorization error:', error);
-            return res.status(500).json({
-                error: 'Internal Server Error',
-                message: 'Authorization check failed'
-            });
+            next(error);
         }
     };
 };
@@ -157,10 +139,7 @@ const authorizeAll = (permissions) => {
     return async (req, res, next) => {
         try {
             if (!req.user || !req.user._id) {
-                return res.status(401).json({
-                    error: 'Unauthorized',
-                    message: 'Authentication required'
-                });
+                throw new AppError(ErrorCodes.AUTH.TOKEN_MISSING);
             }
 
             const userRoles = await User_Roles.find({ userId: req.user._id })
@@ -187,17 +166,12 @@ const authorizeAll = (permissions) => {
                 return next();
             }
 
-            return res.status(403).json({
-                error: 'Forbidden',
-                message: `Missing permissions: ${missingPermissions.join(', ')}`
+            throw new AppError(ErrorCodes.AUTHZ.PERMISSION_DENIED, {
+                details: { missing: missingPermissions }
             });
 
         } catch (error) {
-            console.error('Authorization error:', error);
-            return res.status(500).json({
-                error: 'Internal Server Error',
-                message: 'Authorization check failed'
-            });
+            next(error);
         }
     };
 };

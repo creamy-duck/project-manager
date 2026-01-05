@@ -8,7 +8,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
-import ModeToggle from "@/components/ModeToggle.vue";
 
 interface NavItem {
   title: string

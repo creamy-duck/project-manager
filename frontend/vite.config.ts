@@ -6,6 +6,15 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 export default defineConfig({
   plugins: [vue(), vueDevTools(), tailwindcss()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

@@ -1,25 +1,20 @@
 <script setup lang="ts">
 import {
-  IconCamera,
-  IconChartBar,
   IconDashboard,
   IconDatabase,
-  IconFileAi,
   IconFileDescription,
   IconFolder,
   IconHelp,
   IconInnerShadowTop,
-  IconListDetails,
   IconReport,
-  IconSearch,
   IconSettings,
   IconUsers,
 } from '@tabler/icons-vue'
 
-import NavDummy from '@/components/NavDummy.vue'
-import NavMain from '@/components/NavMain.vue'
-import NavSecondary from '@/components/NavSecondary.vue'
-import NavUser from '@/components/NavUser.vue'
+import NavDummy from '@/components/MainLayout/NavDummy.vue'
+import NavMain from '@/components/MainLayout/NavMain.vue'
+import NavSecondary from '@/components/MainLayout/NavSecondary.vue'
+import NavUser from '@/components/MainLayout/NavUser.vue'
 import {
   Sidebar,
   SidebarContent,

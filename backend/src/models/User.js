@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    isSysAdmin: {
+        type: Boolean,
+        default: false
+    },
     emailVerificationToken: String,
     emailVerificationExpires: Date,
     passwordResetToken: String,

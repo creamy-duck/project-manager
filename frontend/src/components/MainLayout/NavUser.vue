@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {
-  IconCreditCard,
   IconDotsVertical,
   IconLogout,
   IconNotification,
@@ -23,7 +22,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar'
-import ModeToggle from '@/components/ModeToggle.vue'
+import {useAuthStore} from "@/stores/auth.ts";
+import router from "@/router";
 
 interface User {
   name: string
@@ -36,6 +36,13 @@ defineProps<{
 }>()
 
 const { isMobile } = useSidebar()
+
+const authStore = useAuthStore()
+
+function logout() {
+  authStore.logout()
+  router.push('/auth/login')
+}
 </script>
 
 <template>
@@ -92,7 +99,7 @@ const { isMobile } = useSidebar()
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem @click="logout()">
             <IconLogout />
             Log out
           </DropdownMenuItem>

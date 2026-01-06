@@ -15,7 +15,7 @@ const mode = useColorMode()
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <!--TODO: REDO DESIGN-->
+      <!--TODO: Redo design-->
       <Button variant="outline">
         Appearance
       </Button>

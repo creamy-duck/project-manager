@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { HTMLAttributes } from "vue"
+import {type HTMLAttributes, ref} from "vue"
 
 import { IconInnerShadowTop } from '@tabler/icons-vue'
 import { cn } from "@/lib/utils"
@@ -12,15 +12,39 @@ import {
   FieldSeparator,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import {useAuthStore} from "@/stores/auth.ts";
+import router from "@/router";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"]
 }>()
+
+const email = ref('')
+const password = ref('')
+
+const authStore = useAuthStore()
+
+const isLoading = ref(false)
+const serverError = ref('')
+
+async function handleSubmit() {
+  isLoading.value = true
+  serverError.value = ''
+
+  try {
+    await authStore.login(email.value, password.value)
+    await router.push('/dashboard')
+  } catch (error: any) {
+    serverError.value = error.message || 'Login failed'
+  } finally {
+    isLoading.value = false
+  }
+}
 </script>
 
 <template>
   <div :class="cn('flex flex-col gap-6', props.class)">
-    <form>
+    <form @submit.prevent="handleSubmit">
       <FieldGroup>
         <div class="flex flex-col items-center gap-2 text-center">
           <router-link
@@ -51,6 +75,7 @@ const props = defineProps<{
               type="email"
               placeholder="m@example.com"
               required
+              v-model="email"
           />
         </Field>
         <Field>
@@ -65,12 +90,15 @@ const props = defineProps<{
               Forgot your password?
             </router-link>
           </div>
-          <Input id="password" type="password" required />
+          <Input id="password" type="password" required v-model="password" />
         </Field>
         <Field>
-          <Button type="submit">
+          <Button type="submit" :disabled="isLoading">
             Login
           </Button>
+          <FieldDescription v-if="serverError" class="text-destructive">
+            {{ serverError }}
+          </FieldDescription>
         </Field>
         <FieldSeparator>Or</FieldSeparator>
         <Field>

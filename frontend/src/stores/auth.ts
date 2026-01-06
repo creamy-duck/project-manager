@@ -24,6 +24,16 @@ export const useAuthStore = defineStore('auth', () => {
     return data
   }
 
+  async function login(email: string, password: string) {
+    const data = await post<{ token: string; user: any }>('/auth/login', {
+      email,
+      password,
+    })
+
+    setAuth(data.token, data.user)
+    return data
+  }
+
   function logout() {
     token.value = null
     user.value = null
@@ -31,5 +41,5 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.removeItem('user')
   }
 
-  return { user, token, setAuth, signup, logout }
+  return { user, token, signup, login, logout }
 })

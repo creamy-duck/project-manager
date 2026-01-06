@@ -29,11 +29,13 @@ const validEmail = ref(true)
 const password = ref('')
 const confirmPassword = ref('')
 const validPassword = ref(true)
-const isLoading = ref(false)
+
 const authStore = useAuthStore()
+
+const isLoading = ref(false)
 const serverError = ref('')
 
-async function signup() {
+async function handleSubmit() {
   validateUsername()
   validateEmail()
   validatePassword()
@@ -94,7 +96,7 @@ function validatePassword() {
 
 <template>
   <div :class="cn('flex flex-col gap-6', props.class)">
-    <form @submit.prevent="signup">
+    <form @submit.prevent="handleSubmit">
       <FieldGroup>
         <div class="flex flex-col items-center gap-2 text-center">
           <router-link

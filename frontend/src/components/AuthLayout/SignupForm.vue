@@ -46,34 +46,13 @@ async function signup() {
   serverError.value = ''
 
   try {
-    const result = await signupUser(username.value, email.value, password.value)
-
-    authStore.setAuth(result.token, result.user)
+    await authStore.signup(username.value, email.value, password.value)
     await router.push('/dashboard')
   } catch (error: any) {
     serverError.value = error.message || 'Signup failed'
-    console.error('Signup failed:', error)
   } finally {
     isLoading.value = false
   }
-}
-
-async function signupUser(username: string, email: string, password: string) {
-  const response = await fetch('/api/v1/auth/register', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ username, email, password }),
-  })
-
-  const data = await response.json()
-
-  if (!response.ok) {
-    throw new Error(data.message || 'Signup failed')
-  }
-
-  return data
 }
 
 function validateUsername() {

@@ -58,7 +58,7 @@ router.beforeEach((to, _from, next) => {
     next('/auth/login')
   }
 
-  if (to.path === '/auth' && isAuthenticated) {
+  if (['/auth', '/auth/login', '/auth/signup'].includes(to.path) && isAuthenticated) {
     next('/')
   }
 

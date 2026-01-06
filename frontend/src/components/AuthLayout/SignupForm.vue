@@ -118,23 +118,23 @@ function validatePassword() {
     <form @submit.prevent="signup">
       <FieldGroup>
         <div class="flex flex-col items-center gap-2 text-center">
-          <a
-            href="#"
+          <router-link
+            to="#"
             class="flex flex-col items-center gap-2 font-medium"
           >
             <div class="flex size-8 items-center justify-center rounded-md">
               <IconInnerShadowTop class="size-6" />
             </div>
             <span class="sr-only">Project Manager</span>
-          </a>
+          </router-link>
           <h1 class="text-xl font-bold">
             Welcome to Project Manager
           </h1>
           <FieldDescription>
             Already have an account?
-            <a href="/auth/login">
+            <router-link to="/auth/login">
               Sign in
-            </a>
+            </router-link>
           </FieldDescription>
         </div>
         <Field>
@@ -211,8 +211,8 @@ function validatePassword() {
       </FieldGroup>
     </form>
     <FieldDescription class="px-6 text-center">
-      By clicking continue, you agree to our <a href="#">Terms of Service</a>
-      and <a href="#">Privacy Policy</a>.
+      By clicking continue, you agree to our <router-link to="#">Terms of Service</router-link>
+      and <router-link to="#">Privacy Policy</router-link>.
     </FieldDescription>
   </div>
 </template>

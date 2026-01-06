@@ -26,10 +26,10 @@ defineProps<{
       <SidebarMenu>
         <SidebarMenuItem v-for="item in items" :key="item.title">
           <SidebarMenuButton as-child>
-            <a :href="item.url">
+            <router-link :to="item.url">
               <component :is="item.icon" v-if="item.icon" />
               {{ item.title }}
-            </a>
+            </router-link>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>

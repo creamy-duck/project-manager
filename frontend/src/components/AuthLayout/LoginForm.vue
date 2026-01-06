@@ -23,23 +23,23 @@ const props = defineProps<{
     <form>
       <FieldGroup>
         <div class="flex flex-col items-center gap-2 text-center">
-          <a
-            href="#"
+          <router-link
+            to="/auth/signup"
             class="flex flex-col items-center gap-2 font-medium"
           >
             <div class="flex size-8 items-center justify-center rounded-md">
               <IconInnerShadowTop class="size-6" />
             </div>
             <span class="sr-only">Project Manager</span>
-          </a>
+          </router-link>
           <h1 class="text-xl font-bold">
             Welcome to Project Manager
           </h1>
           <FieldDescription>
             Don't have an account?
-            <a href="/auth/signup">
+            <router-link to="/auth/signup">
               Sign up
-            </a>
+            </router-link>
           </FieldDescription>
         </div>
         <Field>
@@ -58,12 +58,12 @@ const props = defineProps<{
             <FieldLabel for="password">
               Password
             </FieldLabel>
-            <a
-                href="#"
+            <router-link
+                to="#"
                 class="ml-auto inline-block text-sm underline-offset-4 hover:underline"
             >
               Forgot your password?
-            </a>
+            </router-link>
           </div>
           <Input id="password" type="password" required />
         </Field>
@@ -84,8 +84,8 @@ const props = defineProps<{
       </FieldGroup>
     </form>
     <FieldDescription class="px-6 text-center">
-      By clicking continue, you agree to our <a href="#">Terms of Service</a>
-      and <a href="#">Privacy Policy</a>.
+      By clicking continue, you agree to our <router-link to="#">Terms of Service</router-link>
+      and <router-link to="#">Privacy Policy</router-link>.
     </FieldDescription>
   </div>
 </template>

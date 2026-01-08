@@ -137,6 +137,16 @@ const ErrorCodes = {
             code: 'error.auth.user_not_found',
             message: 'User associated with token not found',
             statusCode: 401
+        },
+        VERIFY_TOKEN_INVALID: {
+            code: 'error.auth.verify_token_invalid',
+            message: 'Invalid verification token',
+            statusCode: 401
+        },
+        VERIFY_PIN_INVALID: {
+            code: 'error.auth.verify_pin_invalid',
+            message: 'Invalid verification PIN',
+            statusCode: 401
         }
     },
 

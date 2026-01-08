@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { AppError, ErrorCodes } = require('../errors');
 const MailService = require('./mailService');
 const { MailTypes } = require('../mail/');
@@ -47,18 +48,26 @@ class AuthService {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        const tokens = this.generateVerifyTokenForEmail();
+
         const newUser = new User({
             name: username,
             email,
-            password: hashedPassword
+            password: hashedPassword,
+            emailVerificationToken: tokens.code,
+            emailVerificationPin: tokens.pin
         });
 
         await newUser.save();
 
+
+
         let params = {
             username: username,
             loginUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
-            year: new Date().getFullYear()
+            year: new Date().getFullYear(),
+            verifyUrl: `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/v1/auth/verify?code=${tokens.code}&email=${encodeURIComponent(email)}`,
+            pin: tokens.pin
         }
 
         await MailService.createMail(newUser, MailTypes.AUTH.REGISTER, params);
@@ -68,6 +77,21 @@ class AuthService {
 
         return { user: userObject, token };
     }
+
+    generateVerifyTokenForEmail() {
+
+        const code = crypto.randomBytes(50).toString('hex');
+        const pin = this.generateSecurePin();
+
+        return { code, pin };
+    }
+
+    generateSecurePin() {
+        const array = new Uint32Array(1);
+        crypto.getRandomValues(array);
+        return (array[0] % 1_000_000).toString().padStart(6, "0");
+    }
+
 
     generateToken(user) {
         const payload = {
@@ -87,6 +111,38 @@ class AuthService {
         delete userObject.password;
         delete userObject.__v;
         return userObject;
+    }
+
+    async verifyToken(token) {
+        const user = await User.findOne({ emailVerificationToken: token });
+
+        if (!user) {
+            throw new AppError(ErrorCodes.AUTH.VERIFY_TOKEN_INVALID);
+        }
+
+        user.isEmailVerified = true;
+        user.emailVerificationToken = undefined;
+        user.emailVerificationPin = undefined;
+
+        await user.save();
+
+        return this.sanitizeUser(user);
+    }
+
+    async verifyPin(email, pin) {
+        const user = await User.findOne({ email, emailVerificationPin: pin });
+
+        if (!user) {
+            throw new AppError(ErrorCodes.AUTH.VERIFY_PIN_INVALID);
+        }
+
+        user.isEmailVerified = true;
+        user.emailVerificationToken = undefined;
+        user.emailVerificationPin = undefined;
+
+        await user.save();
+
+        return this.sanitizeUser(user);
     }
 }
 

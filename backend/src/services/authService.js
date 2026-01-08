@@ -13,6 +13,14 @@ class AuthService {
             throw new AppError(ErrorCodes.AUTH.INVALID_CREDENTIALS);
         }
 
+        if (!user.isActive) {
+            throw new AppError(ErrorCodes.AUTHZ.ACCOUNT_DISABLED);
+        }
+
+        if (!user.isEmailVerified) {
+            throw new AppError(ErrorCodes.AUTHZ.EMAIL_NOT_VERIFIED);
+        }
+
         const isPasswordValid = await bcrypt.compare(password, user.password);
 
         if (!isPasswordValid) {
@@ -48,7 +56,9 @@ class AuthService {
         await newUser.save();
 
         let params = {
-            username: username
+            username: username,
+            loginUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+            year: new Date().getFullYear()
         }
 
         await MailService.createMail(newUser, MailTypes.AUTH.REGISTER, params);

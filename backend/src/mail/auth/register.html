@@ -1,1 +1,121 @@
-<h1>Willkommen {{username}}</h1>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Willkommen bei Project Manager</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #f5f5f5; color: #1a1a2e;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #f5f5f5;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 520px; background-color: #ffffff; border-radius: 12px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); overflow: hidden;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #D97706; padding: 32px 40px; text-align: center;">
+              <h1 style="margin: 0; font-size: 24px; font-weight: 700; color: #ffffff; letter-spacing: -0.5px;">
+                Project Manager
+              </h1>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding: 40px;">
+              <h2 style="margin: 0 0 16px 0; font-size: 22px; font-weight: 600; color: #1a1a2e;">
+                Willkommen, {{username}}!
+              </h2>
+              <p style="margin: 0 0 24px 0; font-size: 15px; line-height: 1.6; color: #4a4a5a;">
+                Vielen Dank für deine Registrierung. Dein Konto wurde erfolgreich erstellt und du kannst jetzt alle Funktionen nutzen.
+              </p>
+
+              <!-- Feature List -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-bottom: 28px;">
+                <tr>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #e8e8ed;">
+                    <table role="presentation" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="width: 32px; vertical-align: top;">
+                          <span style="display: inline-block; width: 20px; height: 20px; background-color: #FEF3C7; border-radius: 50%; text-align: center; line-height: 20px; font-size: 12px; color: #D97706;">&#10003;</span>
+                        </td>
+                        <td style="font-size: 14px; color: #4a4a5a;">
+                          Projekte erstellen und verwalten
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0; border-bottom: 1px solid #e8e8ed;">
+                    <table role="presentation" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="width: 32px; vertical-align: top;">
+                          <span style="display: inline-block; width: 20px; height: 20px; background-color: #FEF3C7; border-radius: 50%; text-align: center; line-height: 20px; font-size: 12px; color: #D97706;">&#10003;</span>
+                        </td>
+                        <td style="font-size: 14px; color: #4a4a5a;">
+                          Mit deinem Team zusammenarbeiten
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 12px 0;">
+                    <table role="presentation" cellspacing="0" cellpadding="0">
+                      <tr>
+                        <td style="width: 32px; vertical-align: top;">
+                          <span style="display: inline-block; width: 20px; height: 20px; background-color: #FEF3C7; border-radius: 50%; text-align: center; line-height: 20px; font-size: 12px; color: #D97706;">&#10003;</span>
+                        </td>
+                        <td style="font-size: 14px; color: #4a4a5a;">
+                          Fortschritt tracken und analysieren
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- CTA Button -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td align="center">
+                    <a href="{{loginUrl}}" style="display: inline-block; padding: 14px 32px; background-color: #D97706; color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 600; border-radius: 8px; transition: background-color 0.2s;">
+                      Jetzt loslegen
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 24px 40px; background-color: #fafafa; border-top: 1px solid #e8e8ed;">
+              <p style="margin: 0 0 8px 0; font-size: 13px; color: #6b6b7a; text-align: center;">
+                Du hast diese E-Mail erhalten, weil du dich bei Project Manager registriert hast.
+              </p>
+              <p style="margin: 0; font-size: 13px; color: #6b6b7a; text-align: center;">
+                Bei Fragen erreichst du uns unter <a href="mailto:support@projectmanager.de" style="color: #D97706; text-decoration: none;">support@projectmanager.de</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+
+        <!-- Legal Footer -->
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width: 520px;">
+          <tr>
+            <td style="padding: 24px 40px; text-align: center;">
+              <p style="margin: 0; font-size: 12px; color: #9a9aaa;">
+                &copy; {{year}} Project Manager. Alle Rechte vorbehalten.
+              </p>
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

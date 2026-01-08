@@ -1,193 +1,101 @@
 const userService = require('../services/userService');
+const asyncHandler = require('../middleware/asyncHandler');
+const { AppError, ErrorCodes } = require('../errors');
 
 class UserController {
-    getAll = async (req, res) => {
-        try {
-            const { page, limit, role, isActive } = req.query;
+    getAll = asyncHandler(async (req, res) => {
+        const { page, limit, role, isActive } = req.query;
 
-            const options = {
-                page: parseInt(page) || 1,
-                limit: parseInt(limit) || 10,
-                role,
-                isActive: isActive === 'true' ? true : isActive === 'false' ? false : undefined
-            };
+        const options = {
+            page: parseInt(page) || 1,
+            limit: parseInt(limit) || 10,
+            role,
+            isActive: isActive === 'true' ? true : isActive === 'false' ? false : undefined
+        };
 
-            const result = await userService.getAllUsers(options);
+        const result = await userService.getAllUsers(options);
 
-            return res.status(200).json({
-                message: 'Users retrieved successfully',
-                ...result
-            });
+        return res.status(200).json({
+            success: true,
+            message: 'Users retrieved successfully',
+            ...result
+        });
+    });
 
-        } catch (error) {
-            console.error('Get all users error:', error.message);
-            return res.status(500).json({
-                error: 'Internal Server Error',
-                message: 'Failed to retrieve users'
+    getById = asyncHandler(async (req, res) => {
+        const { id } = req.params;
+
+        const user = await userService.getUserById(id);
+
+        return res.status(200).json({
+            success: true,
+            message: 'User retrieved successfully',
+            user
+        });
+    });
+
+    getMe = asyncHandler(async (req, res) => {
+        const userId = req.user?.id;
+
+        if (!userId) {
+            throw new AppError(ErrorCodes.AUTH.TOKEN_INVALID);
+        }
+
+        const user = await userService.getCurrentUser(userId);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Current user retrieved successfully',
+            user
+        });
+    });
+
+    create = asyncHandler(async (req, res) => {
+        const { name, email, password, role } = req.body;
+
+        if (!name || !email || !password) {
+            throw new AppError(ErrorCodes.VALIDATION.FAILED, {
+                message: 'Name, email and password are required',
+                details: [
+                    ...(!name ? [{ field: 'name', message: 'Name is required' }] : []),
+                    ...(!email ? [{ field: 'email', message: 'Email is required' }] : []),
+                    ...(!password ? [{ field: 'password', message: 'Password is required' }] : [])
+                ]
             });
         }
-    };
 
-    getById = async (req, res) => {
-        try {
-            const { id } = req.params;
+        const user = await userService.createUser({ name, email, password, role });
 
-            const user = await userService.getUserById(id);
+        return res.status(201).json({
+            success: true,
+            message: 'User created successfully',
+            user
+        });
+    });
 
-            return res.status(200).json({
-                message: 'User retrieved successfully',
-                user
-            });
+    update = asyncHandler(async (req, res) => {
+        const { id } = req.params;
+        const { name, email, role, isActive } = req.body;
 
-        } catch (error) {
-            console.error('Get user by ID error:', error.message);
+        const user = await userService.updateUser(id, { name, email, role, isActive });
 
-            if (error.code === 'USER_NOT_FOUND') {
-                return res.status(404).json({
-                    error: 'Not Found',
-                    message: error.message
-                });
-            }
+        return res.status(200).json({
+            success: true,
+            message: 'User updated successfully',
+            user
+        });
+    });
 
-            return res.status(500).json({
-                error: 'Internal Server Error',
-                message: 'Failed to retrieve user'
-            });
-        }
-    };
+    delete = asyncHandler(async (req, res) => {
+        const { id } = req.params;
 
-    getMe = async (req, res) => {
-        try {
-            const userId = req.user?.id;
+        await userService.deleteUser(id);
 
-            if (!userId) {
-                return res.status(401).json({
-                    error: 'Unauthorized',
-                    message: 'User not authenticated'
-                });
-            }
-
-            const user = await userService.getCurrentUser(userId);
-
-            return res.status(200).json({
-                message: 'Current user retrieved successfully',
-                user
-            });
-
-        } catch (error) {
-            console.error('Get current user error:', error.message);
-
-            if (error.code === 'USER_NOT_FOUND') {
-                return res.status(404).json({
-                    error: 'Not Found',
-                    message: error.message
-                });
-            }
-
-            return res.status(500).json({
-                error: 'Internal Server Error',
-                message: 'Failed to retrieve current user'
-            });
-        }
-    };
-
-    create = async (req, res) => {
-        try {
-            const { name, email, password, role } = req.body;
-
-            if (!name || !email || !password) {
-                return res.status(400).json({
-                    error: 'Validation failed',
-                    message: 'Name, email and password are required'
-                });
-            }
-
-            const user = await userService.createUser({ name, email, password, role });
-
-            return res.status(201).json({
-                message: 'User created successfully',
-                user
-            });
-
-        } catch (error) {
-            console.error('Create user error:', error.message);
-
-            if (error.code === 'USER_EXISTS') {
-                return res.status(400).json({
-                    error: 'Bad Request',
-                    message: error.message
-                });
-            }
-
-            return res.status(500).json({
-                error: 'Internal Server Error',
-                message: 'Failed to create user'
-            });
-        }
-    };
-
-    update = async (req, res) => {
-        try {
-            const { id } = req.params;
-            const { name, email, role, isActive } = req.body;
-
-            const user = await userService.updateUser(id, { name, email, role, isActive });
-
-            return res.status(200).json({
-                message: 'User updated successfully',
-                user
-            });
-
-        } catch (error) {
-            console.error('Update user error:', error.message);
-
-            if (error.code === 'USER_NOT_FOUND') {
-                return res.status(404).json({
-                    error: 'Not Found',
-                    message: error.message
-                });
-            }
-
-            if (error.code === 'EMAIL_EXISTS') {
-                return res.status(400).json({
-                    error: 'Bad Request',
-                    message: error.message
-                });
-            }
-
-            return res.status(500).json({
-                error: 'Internal Server Error',
-                message: 'Failed to update user'
-            });
-        }
-    };
-
-    delete = async (req, res) => {
-        try {
-            const { id } = req.params;
-
-            await userService.deleteUser(id);
-
-            return res.status(200).json({
-                message: 'User deleted successfully'
-            });
-
-        } catch (error) {
-            console.error('Delete user error:', error.message);
-
-            if (error.code === 'USER_NOT_FOUND') {
-                return res.status(404).json({
-                    error: 'Not Found',
-                    message: error.message
-                });
-            }
-
-            return res.status(500).json({
-                error: 'Internal Server Error',
-                message: 'Failed to delete user'
-            });
-        }
-    };
+        return res.status(200).json({
+            success: true,
+            message: 'User deleted successfully'
+        });
+    });
 }
 
 module.exports = new UserController();

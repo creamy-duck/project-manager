@@ -2,6 +2,8 @@ const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { AppError, ErrorCodes } = require('../errors');
+const MailService = require('./mailService');
+const { MailTypes } = require('../mail/');
 
 class AuthService {
     async authenticateUser(email, password) {
@@ -44,6 +46,12 @@ class AuthService {
         });
 
         await newUser.save();
+
+        let params = {
+            username: username
+        }
+
+        await MailService.createMail(newUser, MailTypes.AUTH.REGISTER, params);
 
         const token = this.generateToken(newUser);
         const userObject = this.sanitizeUser(newUser);

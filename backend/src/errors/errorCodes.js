@@ -228,6 +228,11 @@ const ErrorCodes = {
             code: 'error.server.database',
             message: 'Database operation failed',
             statusCode: 500
+        },
+        EMAIL: {
+            code: 'error.server.email',
+            message: 'An unexpected error occurred',
+            statusCode: 500
         }
     }
 };

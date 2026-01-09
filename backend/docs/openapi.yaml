@@ -398,19 +398,22 @@ components:
         _id:
           type: string
           description: User ID
-        username:
+        name:
           type: string
-          description: Username
+          description: User's name
         email:
           type: string
           format: email
           description: User's email address
-        role:
-          type: string
-          description: User role
         isActive:
           type: boolean
           description: Whether the user account is active
+        isEmailVerified:
+          type: boolean
+          description: Whether the user's email is verified
+        isSysAdmin:
+          type: boolean
+          description: Whether the user is a system administrator
         createdAt:
           type: string
           format: date-time

@@ -147,6 +147,11 @@ const ErrorCodes = {
             code: 'error.auth.verify_pin_invalid',
             message: 'Invalid verification PIN',
             statusCode: 401
+        },
+        VERIFY_CODE_MISSING: {
+            code: 'error.auth.verify_code_missing',
+            message: 'Verification code is missing',
+            statusCode: 400
         }
     },
 

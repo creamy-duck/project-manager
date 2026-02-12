@@ -21,7 +21,7 @@ router.get('/verify',
     authController.verifyToken
 );
 
-router.post('/verfiy-pin',
+router.post('/verify-pin',
     authController.verifyPin);
 
 module.exports = router;

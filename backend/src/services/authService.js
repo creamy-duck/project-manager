@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
+const crypto = require('node:crypto');
 const { AppError, ErrorCodes } = require('../errors');
 const MailService = require('./mailService');
 const { MailTypes } = require('../mail/');
@@ -47,30 +47,31 @@ class AuthService {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-
         const tokens = this.generateVerifyTokenForEmail();
 
-        const newUser = new User({
+        const userData = {
             name: username,
             email,
             password: hashedPassword,
             emailVerificationToken: tokens.code,
             emailVerificationPin: tokens.pin
-        });
+        };
 
-        await newUser.save();
-
-
-
-        let params = {
-            username: username,
+        const params = {
+            username,
             loginUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
             year: new Date().getFullYear(),
             verifyUrl: `${process.env.BACKEND_URL || 'http://localhost:3000'}/api/v1/auth/verify?code=${tokens.code}&email=${encodeURIComponent(email)}`,
             pin: tokens.pin
+        };
+
+        const mailstatus = await MailService.createMail(userData, MailTypes.AUTH.REGISTER, params);
+
+        if (!mailstatus) {
+            throw new AppError(ErrorCodes.SERVER.EMAIL);
         }
 
-        await MailService.createMail(newUser, MailTypes.AUTH.REGISTER, params);
+        const newUser = await User.create(userData);
 
         const token = this.generateToken(newUser);
         const userObject = this.sanitizeUser(newUser);
@@ -117,7 +118,8 @@ class AuthService {
         const user = await User.findOne({ emailVerificationToken: token });
 
         if (!user) {
-            throw new AppError(ErrorCodes.AUTH.VERIFY_TOKEN_INVALID);
+            //throw new AppError(ErrorCodes.AUTH.VERIFY_TOKEN_INVALID);
+            return false;
         }
 
         user.isEmailVerified = true;

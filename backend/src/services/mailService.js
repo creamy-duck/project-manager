@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const { AppError, ErrorCodes } = require('../errors');
 const { MailTypes } = require('../mail/mails');
+const { logger } = require('../middleware/logger');
 const fs = require("node:fs");
 
 class MailService {
@@ -15,21 +16,27 @@ class MailService {
             content: html
         }
 
-        this.sendMail(infos)
+        return this.sendMail(infos)
 
     }
 
-    sendMail(infos) {
+    async sendMail(infos) {
+        const transporter = this.getTransport();
+
         try {
-            const transporter = this.getTransport();
-            transporter.sendMail({
+            await transporter.sendMail({
                 from: process.env.FROM_EMAIL,
                 to: infos.email,
                 subject: infos.subject,
                 html: infos.content
-            })
+            });
+
+            logger.info(`Email sent to ${infos.email} with subject "${infos.subject}"`);
+            return true;
+
         } catch (e) {
-            throw new AppError(ErrorCodes.SERVER.EMAIL)
+            logger.error(e);
+            return false;
         }
     }
 

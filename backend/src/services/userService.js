@@ -33,7 +33,7 @@ class UserService {
     }
 
     async getUserById(id) {
-        const user = await User.findById(id).select('-password -__v');
+        const user = await User.findById(id).select('-password -__v -emailVerificationToken -emailVerificationPin');
 
         if (!user) {
             throw new AppError(ErrorCodes.RESOURCE.USER.NOT_FOUND);

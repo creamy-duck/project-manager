@@ -12,7 +12,7 @@ class MailService {
 
         let infos = {
             email: user.email,
-            subject: message.subject,
+            subject: message.subject + " " + user.name,
             content: html
         }
 

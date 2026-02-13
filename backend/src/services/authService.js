@@ -73,10 +73,9 @@ class AuthService {
 
         const newUser = await User.create(userData);
 
-        const token = this.generateToken(newUser);
         const userObject = this.sanitizeUser(newUser);
 
-        return { user: userObject, token };
+        return { user: userObject };
     }
 
     generateVerifyTokenForEmail() {
@@ -111,6 +110,10 @@ class AuthService {
         const userObject = user.toJSON();
         delete userObject.password;
         delete userObject.__v;
+        delete userObject.isSysAdmin;
+        delete userObject.emailVerificationToken;
+        delete userObject.emailVerificationPin;
+        delete userObject._id;
         return userObject;
     }
 

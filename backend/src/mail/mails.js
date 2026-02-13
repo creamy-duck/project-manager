@@ -2,7 +2,7 @@ const MailTypes = {
     AUTH: {
         REGISTER: {
             file: './src/mail/auth/register.html',
-            subject: 'Register',
+            subject: 'Willkommen  ',
         },
         RESET_PASSWORD: {
             file: './src/mail/auth/resetPassword.html'

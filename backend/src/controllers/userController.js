@@ -6,11 +6,18 @@ class UserController {
     getAll = asyncHandler(async (req, res) => {
         const { page, limit, role, isActive } = req.query;
 
+        let isActiveValue;
+        if (isActive === 'true') {
+            isActiveValue = true;
+        } else if (isActive === 'false') {
+            isActiveValue = false;
+        }
+
         const options = {
-            page: parseInt(page) || 1,
-            limit: parseInt(limit) || 10,
+            page: Number.parseInt(page) || 1,
+            limit: Number.parseInt(limit) || 10,
             role,
-            isActive: isActive === 'true' ? true : isActive === 'false' ? false : undefined
+            isActive: isActiveValue
         };
 
         const result = await userService.getAllUsers(options);
@@ -41,7 +48,14 @@ class UserController {
             throw new AppError(ErrorCodes.AUTH.TOKEN_INVALID);
         }
 
-        const user = await userService.getCurrentUser(userId);
+        let user = await userService.getCurrentUser(userId);
+
+        const userObject = user.toObject();
+        delete userObject._id;
+        delete userObject.__v;
+        delete userObject.isSysAdmin;
+
+        user = userObject;
 
         return res.status(200).json({
             success: true,
@@ -57,9 +71,9 @@ class UserController {
             throw new AppError(ErrorCodes.VALIDATION.FAILED, {
                 message: 'Name, email and password are required',
                 details: [
-                    ...(!name ? [{ field: 'name', message: 'Name is required' }] : []),
-                    ...(!email ? [{ field: 'email', message: 'Email is required' }] : []),
-                    ...(!password ? [{ field: 'password', message: 'Password is required' }] : [])
+                    ...(name ? [] : [{ field: 'name', message: 'Name is required' }]),
+                    ...(email ? [] : [{ field: 'email', message: 'Email is required' }]),
+                    ...(password ? [] : [{ field: 'password', message: 'Password is required' }])
                 ]
             });
         }
